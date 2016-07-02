@@ -20,6 +20,20 @@ describe('extract', () => {
     })
   })
 
+  describe('composes', () => {
+    const styles = fs.readFileSync(path.join(__dirname, './composes/expected/styles.css'))
+    const map = fs.readFileSync(path.join(__dirname, './composes/expected/map.json'))
+
+    it('works', done => {
+      extract(path.join(__dirname, './composes/fixtures/app'))
+        .then(result => {
+          assert.equal(result.styles, styles.toString())
+          assert.deepEqual(result.map, JSON.parse(map))
+        })
+        .then(done, done)
+    })
+  })
+
   describe('plugins', () => {
     const styles = fs.readFileSync(path.join(__dirname, './plugins/expected/styles.css'))
     const map = fs.readFileSync(path.join(__dirname, './plugins/expected/map.json'))
