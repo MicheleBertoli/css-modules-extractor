@@ -4,8 +4,8 @@ import read from 'fs-readdir-recursive'
 import postcss from 'postcss'
 import modules from 'postcss-modules'
 
-const styles = []
-const map = {}
+let styles
+let map
 
 const filter = file => file.endsWith('css')
 
@@ -16,18 +16,23 @@ const getJSON = source => (cssFileName, json) => {
 
 const store = result => styles.push(result.css)
 
-const process = source => file => {
-  const from = path.join(source, file)
-  const css = fs.readFileSync(from)
+const process = (source, plugins) => file => {
+  const fromPath = path.join(source, file)
+  const css = fs.readFileSync(fromPath)
 
-  return postcss(modules({ getJSON: getJSON(source) })).process(css, { from }).then(store)
+  return postcss(...plugins, modules({ getJSON: getJSON(source) }))
+    .process(css, { from: fromPath })
+    .then(store)
 }
 
 const result = () => ({ styles: styles.join(''), map })
 
-export const extract = source => {
+export const extract = (source, ...plugins) => {
+  styles = []
+  map = {}
+
   const files = read(source).filter(filter)
-  const processes = files.map(process(source))
+  const processes = files.map(process(source, plugins))
 
   return Promise.all(processes).then(result)
 }

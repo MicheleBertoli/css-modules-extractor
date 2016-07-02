@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel-register --reporter emoji-reporter",
+    "test": "mocha --compilers js:babel-register --reporter emoji-reporter --recursive",
     "test:watch": "npm test -- --watch"
   },
   "repository": {
@@ -26,7 +26,8 @@
     "eslint-plugin-import": "^1.10.0",
     "eslint-plugin-jsx-a11y": "^1.5.3",
     "eslint-plugin-react": "^5.2.2",
-    "mocha": "^2.5.3"
+    "mocha": "^2.5.3",
+    "postcss-import": "^8.1.2"
   },
   "dependencies": {
     "fs-readdir-recursive": "^1.0.0",

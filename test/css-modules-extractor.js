@@ -1,18 +1,36 @@
 import fs from 'fs'
+import path from 'path'
 import assert from 'assert'
+import atImport from 'postcss-import'
 
 import { extract } from '../src/css-modules-extractor'
 
-const styles = fs.readFileSync('./test/expected/styles.css')
-const map = JSON.parse(fs.readFileSync('./test/expected/map.json'))
-
 describe('extract', () => {
-  it('works', done => {
-    extract('./test/fixtures')
-      .then(result => {
-        assert.equal(result.styles, styles)
-        assert.deepEqual(result.map, map)
-      })
-      .then(done)
+  describe('basic', () => {
+    const styles = fs.readFileSync(path.join(__dirname, './basic/expected/styles.css'))
+    const map = fs.readFileSync(path.join(__dirname, './basic/expected/map.json'))
+
+    it('works', done => {
+      extract(path.join(__dirname, './basic/fixtures'))
+        .then(result => {
+          assert.equal(result.styles, styles.toString())
+          assert.deepEqual(result.map, JSON.parse(map))
+        })
+        .then(done, done)
+    })
+  })
+
+  describe('plugins', () => {
+    const styles = fs.readFileSync(path.join(__dirname, './plugins/expected/styles.css'))
+    const map = fs.readFileSync(path.join(__dirname, './plugins/expected/map.json'))
+
+    it('works', done => {
+      extract(path.join(__dirname, './plugins/fixtures/app'), atImport())
+        .then(result => {
+          assert.equal(result.styles, styles.toString())
+          assert.deepEqual(result.map, JSON.parse(map))
+        })
+        .then(done, done)
+    })
   })
 })
